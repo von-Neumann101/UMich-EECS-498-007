@@ -178,7 +178,7 @@ def nn_forward_backward(
     - X: Input data of shape (N, D). Each X[i] is a training sample.
     - y: Vector of training labels. y[i] is the label for X[i], and each y[i] is
       an integer in the range 0 <= y[i] < C. This parameter is optional; if it
-      is not passed then we only return scores, and if it is passed then we
+      is not passed then we only return ruscores, and if it is passed then we
       instead return the loss and gradients.
     - reg: Regularization strength.
 
@@ -216,8 +216,9 @@ def nn_forward_backward(
     # Replace "pass" statement with your code
     scores -= torch.max(scores, dim=1, keepdim=True).values #numeric stability
     exp_scores = torch.exp(scores)
-    p = exp_scores / exp_scores.sum(dim=1, keepdim=True)
-    loss = -torch.sum(torch.log(p[torch.arange(N), y])) / N + torch.sum(W1 ** 2)+ torch.sum(W2 ** 2)
+    probs = exp_scores / exp_scores.sum(dim=1, keepdim=True)
+    p = probs[torch.arange(N), y]
+    loss = -torch.sum(torch.log(p)) / N + reg * (torch.sum(W1 ** 2)+ torch.sum(W2 ** 2))
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################
@@ -231,7 +232,17 @@ def nn_forward_backward(
     # tensor of same size                                                     #
     ###########################################################################
     # Replace "pass" statement with your code
-    pass
+    
+    probs[torch.arange(N), y] -= 1
+    ds = probs / N
+    dW2 = h1.T @ ds + 2 * reg * W2
+    db2 = ds.sum(dim=0)
+    dh1 = ds @ W2.T
+    dh1[h1 <= 0] = 0
+    dW1 = X.T @ dh1 + 2 * reg * W1
+    db1 = dh1.sum(dim=0)
+    grads['W1'], grads['W2'] = dW1, dW2
+    grads['b1'], grads['b2'] = db1, db2
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################
