@@ -214,7 +214,10 @@ def nn_forward_backward(
     # (Check Numeric Stability in http://cs231n.github.io/linear-classify/).   #
     ############################################################################
     # Replace "pass" statement with your code
-    pass
+    scores -= torch.max(scores, dim=1, keepdim=True).values #numeric stability
+    exp_scores = torch.exp(scores)
+    p = exp_scores / exp_scores.sum(dim=1, keepdim=True)
+    loss = -torch.sum(torch.log(p[torch.arange(N), y])) / N + torch.sum(W1 ** 2)+ torch.sum(W2 ** 2)
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################
