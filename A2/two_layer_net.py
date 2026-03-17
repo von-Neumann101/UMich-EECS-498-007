@@ -232,7 +232,6 @@ def nn_forward_backward(
     # tensor of same size                                                     #
     ###########################################################################
     # Replace "pass" statement with your code
-    
     probs[torch.arange(N), y] -= 1
     ds = probs / N
     dW2 = h1.T @ ds + 2 * reg * W2
