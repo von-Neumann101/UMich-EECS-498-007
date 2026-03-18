@@ -418,7 +418,7 @@ def nn_get_search_params():
     # classifier.                                                             #
     ###########################################################################
     # Replace "pass" statement with your code
-    learning_rates = [1e0, 0.5, 0.1]
+    learning_rates = [1.5 ,1e0, 0.5, 0.1]
     hidden_sizes = [128]
     regularization_strengths = [1e-5, 1e-3, 5e-4]
     learning_rate_decays = [1.0, 0.98, 0.97]
@@ -500,7 +500,7 @@ def find_best_net(
                               learning_rate=l,
                               learning_rate_decay=l_d,
                               reg=r,
-                              num_iters=1000,
+                              num_iters=2000,
                               )
                     y_pred = net.predict(data_dict["X_val"])
                     acc = (y_pred == data_dict["y_val"]).float().mean().item()
