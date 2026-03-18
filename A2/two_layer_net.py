@@ -322,10 +322,10 @@ def nn_train(
         # stored in the grads dictionary defined above.                         #
         #########################################################################
         # Replace "pass" statement with your code
-        params["W1"] -= grads['W1']
-        params["W2"] -= grads['W2']
-        params["b1"] -= grads['b1']
-        params["b2"] -= grads['b2']
+        params["W1"] -= grads['W1'] * learning_rate
+        params["W2"] -= grads['W2'] * learning_rate
+        params["b1"] -= grads['b1'] * learning_rate
+        params["b2"] -= grads['b2'] * learning_rate
         #########################################################################
         #                             END OF YOUR CODE                          #
         #########################################################################
@@ -383,7 +383,8 @@ def nn_predict(
     # TODO: Implement this function; it should be VERY simple!                #
     ###########################################################################
     # Replace "pass" statement with your code
-    
+    scores, _ = nn_forward_pass(params, X)
+    y_pred = scores.argmax(dim=1)
     ###########################################################################
     #                              END OF YOUR CODE                           #
     ###########################################################################
