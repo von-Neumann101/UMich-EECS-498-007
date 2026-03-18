@@ -322,7 +322,14 @@ def nn_train(
         # stored in the grads dictionary defined above.                         #
         #########################################################################
         # Replace "pass" statement with your code
-        pass
+        W1, W2 = params["W1"], params["W2"]
+        b1, b2 = params["b1"], params["b2"]
+        dW1, dW2 = grads['W1'], grads['W2']
+        db1, db2 = grads['b1'], grads['b2']
+        W1 -= dW1
+        W2 -= dW2
+        b1 -= db1
+        b2 -= db2
         #########################################################################
         #                             END OF YOUR CODE                          #
         #########################################################################
