@@ -418,7 +418,10 @@ def nn_get_search_params():
     # classifier.                                                             #
     ###########################################################################
     # Replace "pass" statement with your code
-    
+    learning_rates = [1e0, 0.5, 0.1]
+    hidden_sizes = [128]
+    regularization_strengths = [1e-5, 1e-3, 5e-4]
+    learning_rate_decays = [1.0, 0.98, 0.97]
     ###########################################################################
     #                           END OF YOUR CODE                              #
     ###########################################################################
@@ -479,7 +482,34 @@ def find_best_net(
     # automatically like we did on the previous exercises.                      #
     #############################################################################
     # Replace "pass" statement with your code
-    pass
+    lr, hs, reg, lr_d = get_param_set_fn()
+    for h in hs:
+        for l in lr:
+            for r in reg:
+                for l_d in lr_d:
+                    net = TwoLayerNet(
+                    input_size=data_dict["X_train"].shape[1],
+                    hidden_size=h,
+                    output_size=10,
+                    dtype=data_dict["X_train"].dtype
+                )
+                    stat = net.train(data_dict["X_train"],
+                              data_dict["y_train"],
+                              data_dict["X_val"],
+                              data_dict["y_val"],
+                              learning_rate=l,
+                              learning_rate_decay=l_d,
+                              reg=r,
+                              num_iters=1000,
+                              )
+                    y_pred = net.predict(data_dict["X_val"])
+                    acc = (y_pred == data_dict["y_val"]).float().mean().item()
+                    if acc > best_val_acc:
+                        best_val_acc = acc
+                        best_net = net
+                        best_stat = stat
+                    
+
     #############################################################################
     #                               END OF YOUR CODE                            #
     #############################################################################
