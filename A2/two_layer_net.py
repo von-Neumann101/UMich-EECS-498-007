@@ -326,6 +326,7 @@ def nn_train(
         params["W2"] -= grads['W2'] * learning_rate
         params["b1"] -= grads['b1'] * learning_rate
         params["b2"] -= grads['b2'] * learning_rate
+        learning_rate *= learning_rate_decay
         #########################################################################
         #                             END OF YOUR CODE                          #
         #########################################################################
@@ -418,7 +419,7 @@ def nn_get_search_params():
     # classifier.                                                             #
     ###########################################################################
     # Replace "pass" statement with your code
-    pass
+    
     ###########################################################################
     #                           END OF YOUR CODE                              #
     ###########################################################################
