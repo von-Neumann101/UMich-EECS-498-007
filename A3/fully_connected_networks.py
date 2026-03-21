@@ -713,7 +713,8 @@ class Dropout(object):
             # Store the dropout mask in the mask variable.               #
             ##############################################################
             # Replace "pass" statement with your code
-            pass
+            mask = (torch.rand(x.shape, device=x.device, dtype=x.dtype) > p) / (1 - p)
+            out = x * mask
             ##############################################################
             #                   END OF YOUR CODE                         #
             ##############################################################
@@ -723,7 +724,7 @@ class Dropout(object):
             # inverted dropout.                                          #
             ##############################################################
             # Replace "pass" statement with your code
-            pass
+            out = x
             ##############################################################
             #                      END OF YOUR CODE                      #
             ##############################################################
@@ -750,7 +751,7 @@ class Dropout(object):
             # inverted dropout                                        #
             ###########################################################
             # Replace "pass" statement with your code
-            pass
+            dx = dout * mask
             ###########################################################
             #                     END OF YOUR CODE                    #
             ###########################################################
