@@ -643,7 +643,7 @@ def adam(w, dw, config=None):
     config.setdefault('epsilon', 1e-8)
     config.setdefault('m', torch.zeros_like(w))
     config.setdefault('v', torch.zeros_like(w))
-    config.setdefault('t', 0)
+    config.setdefault('t', 0) # 注意是从0开始
 
     next_w = None
     ##########################################################################
@@ -655,7 +655,12 @@ def adam(w, dw, config=None):
     # using it in any calculations.                                          #
     ##########################################################################
     # Replace "pass" statement with your code
-    pass
+    config["t"] += 1
+    config["m"] = config["beta1"] * config["m"] + (1 - config["beta1"]) * dw
+    config["v"] = config["beta2"] * config["v"] + (1 - config["beta2"]) * dw**2
+    m_hat = config["m"] / (1 - config["beta1"] ** config["t"])
+    v_hat = config["v"] / (1 - config["beta2"] ** config["t"])
+    next_w = w - config["learning_rate"] * m_hat / (torch.sqrt(v_hat) + config["epsilon"])
     #########################################################################
     #                              END OF YOUR CODE                         #
     #########################################################################
