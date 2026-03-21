@@ -39,12 +39,7 @@ class Linear(object):
         # You will need to reshape the input into rows.                      #
         ######################################################################
         # Replace "pass" statement with your code
-        shapes = x.shape[1:]
-        D = 1
-        N = x.shape[0]
-        for i in shapes: #N * M 
-            D *= i
-        y = x.reshape(N, D)
+        y = x.reshape(x.shape[0], -1)
         out = torch.mm(y, w) + b
         ######################################################################
         #                        END OF YOUR CODE                            #
@@ -80,12 +75,7 @@ class Linear(object):
         x         +  y 
               b
         """
-        shapes = x.shape[1:]
-        D = 1
-        N = x.shape[0]
-        for i in shapes: #N * M 
-            D *= i
-        y = x.reshape(N, D)
+        y = x.reshape(x.shape[0], -1)
         # 有的时候不要太在意具体细节，形状对了就没错
         db = torch.sum(dout, dim=0).reshape(b.shape[0])
         dw = torch.mm(y.T, dout)
@@ -223,7 +213,14 @@ class TwoLayerNet(object):
         # weights and biases using the keys 'W2' and 'b2'.                #
         ###################################################################
         # Replace "pass" statement with your code
-        pass
+        self.params['W1'] = weight_scale * torch.randn(
+            input_dim, hidden_dim, dtype=dtype, device=device
+        )
+        self.params['b1'] = torch.zeros(hidden_dim, dtype=dtype, device=device)
+        self.params['W2'] = weight_scale * torch.randn(
+            hidden_dim, num_classes, dtype=dtype, device=device
+        )
+        self.params['b2'] = torch.zeros(num_classes, dtype=dtype, device=device)
         ###############################################################
         #                            END OF YOUR CODE                 #
         ###############################################################
