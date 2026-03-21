@@ -533,7 +533,6 @@ def get_five_layer_network_params():
     learning_rate = 2e-1  # Experiment with this!
     weight_scale = 1e-1   # Experiment with this!
     # Replace "pass" statement with your code
-    pass
     ################################################################
     #                       END OF YOUR CODE                       #
     ################################################################
@@ -577,7 +576,8 @@ def sgd_momentum(w, dw, config=None):
     # update the velocity v.                                         #
     ##################################################################
     # Replace "pass" statement with your code
-    pass
+    v = config["momentum"] * v - config["learning_rate"] * dw
+    next_w = w + v
     ###################################################################
     #                           END OF YOUR CODE                      #
     ###################################################################
