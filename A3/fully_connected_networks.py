@@ -611,7 +611,10 @@ def rmsprop(w, dw, config=None):
     # config['cache'].                                                        #
     ###########################################################################
     # Replace "pass" statement with your code
-    pass
+    config["cache"] = config["decay_rate"] * config["cache"] +\
+        (1 - config["decay_rate"]) * dw**2
+    next_w = w - config["learning_rate"] * dw / (torch.sqrt(config["cache"]) + config["epsilon"])
+
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################
