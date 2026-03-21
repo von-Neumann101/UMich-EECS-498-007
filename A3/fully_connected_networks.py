@@ -356,19 +356,14 @@ class FullyConnectedNet(object):
         self.dtype = dtype
         self.params = {}
 
-        #######################################################################
-        # TODO: Initialize the parameters of the network, storing all         #
-        # values in the self.params dictionary. Store weights and biases      #
-        # for the first layer in W1 and b1; for the second layer use W2 and   #
-        # b2, etc. Weights should be initialized from a normal distribution   #
-        # centered at 0 with standard deviation equal to weight_scale. Biases #
-        # should be initialized to zero.                                      #
-        #######################################################################
-        # Replace "pass" statement with your code
-        pass
-        #######################################################################
-        #                         END OF YOUR CODE                            #
-        #######################################################################
+        layer_dims = [input_dim] + hidden_dims + [num_classes]
+        for i in range(self.num_layers):
+            self.params[f'W{i + 1}'] = weight_scale * torch.randn(
+                layer_dims[i], layer_dims[i + 1], dtype=dtype, device=device
+            )
+            self.params[f'b{i + 1}'] = torch.zeros(
+                layer_dims[i + 1], dtype=dtype, device=device
+            )
 
         # When using dropout we need to pass a dropout_param dictionary
         # to each dropout layer so that the layer knows the dropout
@@ -467,7 +462,16 @@ def create_solver_instance(data_dict, dtype, device):
     #############################################################
     solver = None
     # Replace "pass" statement with your code
-    pass
+    solver = Solver(
+        model,
+        data_dict,
+        optim_config={'learning_rate': 1e-1},
+        lr_decay=0.95,
+        num_epochs=15,
+        batch_size=200,
+        print_every=100,
+        device=device,
+    )
     ##############################################################
     #                    END OF YOUR CODE                        #
     ##############################################################
