@@ -63,7 +63,7 @@ class Linear(object):
           - w: Weights, of shape (D, M)
           - b: Biases, of shape (M,)
         Returns a tuple of:
-        - dx: Gradient with respect to x, of shape
+        - dx: Gradient with respect to x, of shape (N x D)
           (N, d1, ..., d_k)
         - dw: Gradient with respect to w, of shape (D, M)
         - db: Gradient with respect to b, of shape (M,)
@@ -74,7 +74,22 @@ class Linear(object):
         # TODO: Implement the linear backward pass.      #
         ##################################################
         # Replace "pass" statement with your code
-        
+        """
+        w
+           *  wx
+        x         +  y 
+              b
+        """
+        shapes = x.shape[1:]
+        D = 1
+        N = x.shape[0]
+        for i in shapes: #N * M 
+            D *= i
+        y = x.reshape(N, D)
+        # 有的时候不要太在意具体细节，形状对了就没错
+        db = torch.sum(dout, dim=0).reshape(b.shape[0])
+        dw = torch.mm(y.T, dout)
+        dx = torch.mm(dout, w.T).reshape(x.shape)
         ##################################################
         #                END OF YOUR CODE                #
         ##################################################
@@ -101,7 +116,7 @@ class ReLU(object):
         # in-place operation.                             #
         ###################################################
         # Replace "pass" statement with your code
-        pass
+        out = torch.clamp(x, min=0)
         ###################################################
         #                 END OF YOUR CODE                #
         ###################################################
@@ -126,7 +141,7 @@ class ReLU(object):
         # in-place operation.                               #
         #####################################################
         # Replace "pass" statement with your code
-        pass
+        dx = dout * (x > 0)
         #####################################################
         #                  END OF YOUR CODE                 #
         #####################################################
