@@ -356,6 +356,15 @@ class FullyConnectedNet(object):
         self.dtype = dtype
         self.params = {}
 
+        #######################################################################
+        # TODO: Initialize the parameters of the network, storing all         #
+        # values in the self.params dictionary. Store weights and biases      #
+        # for the first layer in W1 and b1; for the second layer use W2 and   #
+        # b2, etc. Weights should be initialized from a normal distribution   #
+        # centered at 0 with standard deviation equal to weight_scale. Biases #
+        # should be initialized to zero.                                      #
+        #######################################################################
+        # Replace "pass" statement with your code
         layer_dims = [input_dim] + hidden_dims + [num_classes]
         for i in range(self.num_layers):
             self.params[f'W{i + 1}'] = weight_scale * torch.randn(
@@ -364,6 +373,9 @@ class FullyConnectedNet(object):
             self.params[f'b{i + 1}'] = torch.zeros(
                 layer_dims[i + 1], dtype=dtype, device=device
             )
+        #######################################################################
+        #                         END OF YOUR CODE                            #
+        #######################################################################
 
         # When using dropout we need to pass a dropout_param dictionary
         # to each dropout layer so that the layer knows the dropout
@@ -424,7 +436,19 @@ class FullyConnectedNet(object):
         # to each dropout forward pass.                                  #
         ##################################################################
         # Replace "pass" statement with your code
-        pass
+        cc = []
+        dc = []
+        h = X
+        cache, dcache = 0, 0
+        for i in range(1, self.num_layers):
+            if self.use_dropout:
+                h, dcache = Dropout.forward(h, self.dropout_param)
+                dc.append(dcache)
+            
+            h, cache = Linear_ReLU.forward(h, self.params[f'W{i}'], self.params[f'b{i}'])
+            cc.append(cache)
+
+        scores, cache = Linear.forward(h, self.params[f'W{self.num_layers}'], self.params[f'b{self.num_layers}'])
         #################################################################
         #                      END OF YOUR CODE                         #
         #################################################################
@@ -446,7 +470,22 @@ class FullyConnectedNet(object):
         # the gradient.                                                     #
         #####################################################################
         # Replace "pass" statement with your code
-        pass
+        loss, ds = softmax_loss(scores, y)
+
+        for i in range(1, self.num_layers + 1):
+            loss += 0.5 * self.reg * torch.sum(self.params[f'W{i}'] ** 2)
+        
+        dout, dW, db = Linear.backward(ds, cache)
+        grads[f'W{self.num_layers}'] = dW + self.reg * self.params[f'W{self.num_layers}']
+        grads[f'b{self.num_layers}'] = db
+
+        for i in range(self.num_layers - 1, 0, -1):
+            if self.use_dropout:
+                dout = Dropout.backward(dout, dc[i-1])
+            
+            dout, dW, db = Linear_ReLU.backward(dout, cc[i-1])
+            grads[f'W{i}'] = dW + self.reg * self.params[f'W{i}']
+            grads[f'b{i}'] = db
         ###########################################################
         #                   END OF YOUR CODE                      #
         ###########################################################
