@@ -44,8 +44,8 @@ class Linear(object):
         N = x.shape[0]
         for i in shapes: #N * M 
             D *= i
-        x = x.reshape(N, D)
-        out = torch.mm(x, w) + b
+        y = x.reshape(N, D)
+        out = torch.mm(y, w) + b
         ######################################################################
         #                        END OF YOUR CODE                            #
         ######################################################################
@@ -74,7 +74,7 @@ class Linear(object):
         # TODO: Implement the linear backward pass.      #
         ##################################################
         # Replace "pass" statement with your code
-        pass
+        
         ##################################################
         #                END OF YOUR CODE                #
         ##################################################
