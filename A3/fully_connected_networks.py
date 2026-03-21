@@ -365,6 +365,7 @@ class FullyConnectedNet(object):
         # should be initialized to zero.                                      #
         #######################################################################
         # Replace "pass" statement with your code
+        # 初始化
         layer_dims = [input_dim] + hidden_dims + [num_classes]
         for i in range(self.num_layers):
             self.params[f'W{i + 1}'] = weight_scale * torch.randn(
@@ -441,12 +442,11 @@ class FullyConnectedNet(object):
         h = X
         cache, dcache = 0, 0
         for i in range(1, self.num_layers):
+            h, cache = Linear_ReLU.forward(h, self.params[f'W{i}'], self.params[f'b{i}'])
+            cc.append(cache)
             if self.use_dropout:
                 h, dcache = Dropout.forward(h, self.dropout_param)
                 dc.append(dcache)
-            
-            h, cache = Linear_ReLU.forward(h, self.params[f'W{i}'], self.params[f'b{i}'])
-            cc.append(cache)
 
         scores, cache = Linear.forward(h, self.params[f'W{self.num_layers}'], self.params[f'b{self.num_layers}'])
         #################################################################
@@ -503,14 +503,8 @@ def create_solver_instance(data_dict, dtype, device):
     # Replace "pass" statement with your code
     solver = Solver(
         model,
-        data_dict,
-        optim_config={'learning_rate': 1e-1},
-        lr_decay=0.95,
-        num_epochs=15,
-        batch_size=200,
-        print_every=100,
-        device=device,
-    )
+        data_dict
+        )
     ##############################################################
     #                    END OF YOUR CODE                        #
     ##############################################################
@@ -522,10 +516,9 @@ def get_three_layer_network_params():
     # TODO: Change weight_scale and learning_rate so your         #
     # model achieves 100% training accuracy within 20 epochs.     #
     ###############################################################
-    weight_scale = 1e-2   # Experiment with this!
-    learning_rate = 1e-4  # Experiment with this!
+    weight_scale = 1e-1   # Experiment with this!
+    learning_rate = 0.5  # Experiment with this!
     # Replace "pass" statement with your code
-    pass
     ################################################################
     #                             END OF YOUR CODE                 #
     ################################################################
