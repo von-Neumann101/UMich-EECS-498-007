@@ -271,11 +271,10 @@ class TwoLayerNet(object):
         # scores variable.                                          #
         #############################################################
         # Replace "pass" statement with your code
-        x = X.reshape(X.shape[0], -1) # N x D
-        h1, _ = Linear_ReLU.forward(x, self.params["W1"], self.params["b1"])
-        h2 = torch.mm(h1, self.params["W2"]) + self.params["b2"]
-        h2_s = h2 - torch.max(h2, dim=0)
-        scores = torch.exp(h2_s) / torch.sum(h2, dim=0)
+        W1, b1 = self.params['W1'], self.params['b1']
+        W2, b2 = self.params['W2'], self.params['b2']
+        h1, cache1 = Linear_ReLU.forward(X, W1, b1)
+        scores, cache2 = Linear.forward(h1, W2, b2)
         ##############################################################
         #                     END OF YOUR CODE                       #
         ##############################################################
@@ -297,7 +296,14 @@ class TwoLayerNet(object):
         # regularization does not include a factor of 0.5.                #
         ###################################################################
         # Replace "pass" statement with your code
-        pass
+        loss, ds = softmax_loss(scores, y)
+        loss += self.reg * (torch.sum(W1 ** 2) + torch.sum(W2 ** 2))
+        dh, dW2, db2 = Linear.backward(ds, cache2)
+        _, dW1, db1 = Linear_ReLU.backward(dh, cache1)
+        dW2 += 2 * self.reg * W2
+        dW1 += 2 * self.reg * W1
+        grads['W1'], grads['W2'] = dW1, dW2
+        grads['b1'], grads['b2'] = db1, db2
         ###################################################################
         #                     END OF YOUR CODE                            #
         ###################################################################
