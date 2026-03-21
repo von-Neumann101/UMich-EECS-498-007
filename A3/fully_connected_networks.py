@@ -271,7 +271,11 @@ class TwoLayerNet(object):
         # scores variable.                                          #
         #############################################################
         # Replace "pass" statement with your code
-        pass
+        x = X.reshape(X.shape[0], -1) # N x D
+        h1, _ = Linear_ReLU.forward(x, self.params["W1"], self.params["b1"])
+        h2 = torch.mm(h1, self.params["W2"]) + self.params["b2"]
+        h2_s = h2 - torch.max(h2, dim=0)
+        scores = torch.exp(h2_s) / torch.sum(h2, dim=0)
         ##############################################################
         #                     END OF YOUR CODE                       #
         ##############################################################
