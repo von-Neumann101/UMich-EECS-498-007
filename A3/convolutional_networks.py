@@ -57,10 +57,8 @@ class Conv(object):
         H, W = x.shape[2], x.shape[3]
         H_out = 1 + (H + 2 * pad - HH) // stride
         W_out = 1 + (W + 2 * pad - WW) // stride
-        pad_x = x
         
-        if pad != 0:
-            pad_x = torch.nn.functional.pad(x, (pad, pad, pad, pad))
+        pad_x = torch.nn.functional.pad(x, (pad, pad, pad, pad)) if pad != 0 else x
         
         out = torch.zeros([N, F, H_out, W_out], dtype=x.dtype, device=x.device)
         for n in range(N):
@@ -69,8 +67,6 @@ class Conv(object):
                         for j in range(0, W_out):
                             x_i, x_j = i * stride, j * stride
                             out[n, f, i, j] = torch.sum(pad_x[n, :, x_i:x_i + HH, x_j:x_j + WW] * w[f]) + b[f]
-
-
         #####################################################################
         #                          END OF YOUR CODE                         #
         #####################################################################
@@ -95,7 +91,27 @@ class Conv(object):
         # TODO: Implement the convolutional backward pass.            #
         ###############################################################
         # Replace "pass" statement with your code
-        pass
+        (x, w, b, conv_param) = cache
+        pad, stride = conv_param['pad'], conv_param['stride']
+        HH, WW = w.shape[2], w.shape[3]
+        pad_x = torch.nn.functional.pad(x, (pad, pad, pad, pad)) if pad != 0 else x
+        N, F, H_out, W_out = dout.shape
+        dx, dw = torch.zeros_like(pad_x), torch.zeros_like(w)
+        
+        db = torch.sum(dout, dim=(0, 2, 3))
+
+        for n in range(N):
+            for f in range(F):
+                for i in range(0, H_out):
+                    for j in range(0, W_out):
+                        dw[f] += dout[n, f, i, j] * pad_x[n,
+                                                    :,
+                                                    i * stride:i * stride + HH,
+                                                    j * stride:j * stride + WW]
+                        
+                        dx[n,:,i * stride:i * stride + HH,j * stride:j * stride + WW] += dout[n, f, i, j] * w[f]
+        if pad != 0: # 把zeropadding裁掉
+            dx = dx[:, :, pad:-pad, pad:-pad]
         ###############################################################
         #                       END OF YOUR CODE                      #
         ###############################################################
