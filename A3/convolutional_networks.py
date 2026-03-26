@@ -328,7 +328,6 @@ class ThreeLayerConvNet(object):
         # above                                                              #
         ######################################################################
         # Replace "pass" statement with your code
-        cache = ()
         h1, c1 = Conv_ReLU_Pool.forward(X, W1, b1, conv_param, pool_param)
         h2, c2 = Linear_ReLU.forward(h1, W2, b2)
         scores, c3 = Linear.forward(h2, W3, b3)
@@ -352,6 +351,20 @@ class ThreeLayerConvNet(object):
         # does not include a factor of 0.5                                 #
         ####################################################################
         # Replace "pass" statement with your code
+
+        loss, ds = softmax_loss(scores, y)
+        dh2, dW3, db3 = Linear.backward(ds, c3)
+        dh1, dW2, db2 = Linear_ReLU.backward(dh2, c2)
+        _, dW1, db1 = Conv_ReLU_Pool.backward(dh1, c1)
+
+        loss += self.reg * (torch.sum(W1 ** 2) + torch.sum(W2 ** 2) + torch.sum(W3 ** 2))
+        dW1 += 2 * self.reg * W1
+        dW2 += 2 * self.reg * W2
+        dW3 += 2 * self.reg * W3
+        
+        grads["W1"], grads["b1"] = dW1, db1
+        grads["W2"], grads["b2"] = dW2, db2
+        grads["W3"], grads["b3"] = dW3, db3
         
         ###################################################################
         #                             END OF YOUR CODE                    #
