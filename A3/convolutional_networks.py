@@ -256,7 +256,22 @@ class ThreeLayerConvNet(object):
         # look at the start of the loss() function to see how that happens.  #
         ######################################################################
         # Replace "pass" statement with your code
-        pass
+        C, H, W = input_dims
+        pooled_dim = num_filters * (H // 2) * (W // 2)
+
+        self.params['W1'] = weight_scale * torch.randn(
+            num_filters, C, filter_size, filter_size,
+            dtype=dtype, device=device
+        )
+        self.params['b1'] = torch.zeros(num_filters, dtype=dtype, device=device)
+        self.params['W2'] = weight_scale * torch.randn(
+            pooled_dim, hidden_dim, dtype=dtype, device=device
+        )
+        self.params['b2'] = torch.zeros(hidden_dim, dtype=dtype, device=device)
+        self.params['W3'] = weight_scale * torch.randn(
+            hidden_dim, num_classes, dtype=dtype, device=device
+        )
+        self.params['b3'] = torch.zeros(num_classes, dtype=dtype, device=device)
         ######################################################################
         #                            END OF YOUR CODE                        #
         ######################################################################
