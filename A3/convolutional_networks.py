@@ -258,20 +258,28 @@ class ThreeLayerConvNet(object):
         # Replace "pass" statement with your code
         C, H, W = input_dims
         pooled_dim = num_filters * (H // 2) * (W // 2)
-
+        # Conv
         self.params['W1'] = weight_scale * torch.randn(
             num_filters, C, filter_size, filter_size,
             dtype=dtype, device=device
         )
         self.params['b1'] = torch.zeros(num_filters, dtype=dtype, device=device)
+
+        # Linear1
         self.params['W2'] = weight_scale * torch.randn(
             pooled_dim, hidden_dim, dtype=dtype, device=device
         )
         self.params['b2'] = torch.zeros(hidden_dim, dtype=dtype, device=device)
+
+        # Linear2
         self.params['W3'] = weight_scale * torch.randn(
             hidden_dim, num_classes, dtype=dtype, device=device
         )
         self.params['b3'] = torch.zeros(num_classes, dtype=dtype, device=device)
+        """
+        注意TODO的阐述，通过卷积层以后宽度和高度不变，所以给relu的是(N, num_filters, H, W)
+        给maxpool也一样，显然2x2的pooling layer是H和W减半的
+        """
         ######################################################################
         #                            END OF YOUR CODE                        #
         ######################################################################
@@ -320,7 +328,10 @@ class ThreeLayerConvNet(object):
         # above                                                              #
         ######################################################################
         # Replace "pass" statement with your code
-        pass
+        cache = ()
+        h1, c1 = Conv_ReLU_Pool.forward(X, W1, b1, conv_param, pool_param)
+        h2, c2 = Linear_ReLU.forward(h1, W2, b2)
+        scores, c3 = Linear.forward(h2, W3, b3)
         ######################################################################
         #                             END OF YOUR CODE                       #
         ######################################################################
@@ -341,7 +352,7 @@ class ThreeLayerConvNet(object):
         # does not include a factor of 0.5                                 #
         ####################################################################
         # Replace "pass" statement with your code
-        pass
+        
         ###################################################################
         #                             END OF YOUR CODE                    #
         ###################################################################
