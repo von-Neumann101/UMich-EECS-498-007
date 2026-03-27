@@ -601,9 +601,11 @@ class DeepConvNet(object):
                 caches.append(cache)
             out, cache = ReLU.forward(out)
             caches.append(cache)
-            if i in self.max_pools:
-                out, cache = MaxPool.forward(out, pool_param=pool_param)
+            if i - 1 in self.max_pools:
+                out, cache = FastMaxPool.forward(out, pool_param=pool_param)
                 caches.append(cache)
+        print(self.params[f'W{self.num_layers}'].shape)
+
         scores, cache = Linear.forward(out, self.params[f'W{self.num_layers}'], self.params[f'b{self.num_layers}'])
         caches.append(cache)
         #####################################################
@@ -630,7 +632,23 @@ class DeepConvNet(object):
         for i in range(1, self.num_layers + 1):
             loss += self.reg * torch.sum(self.params[f"W{i}"] ** 2)
 
-        dout, dW, db = Linear
+        dout, grads[f"W{self.num_layers}"], grads[f"b{self.num_layers}"] = Linear.backward(ds, caches[-1])
+
+        k = len(caches) - 2
+        for i in range(self.num_layers - 1, 0, -1):
+            if i in self.max_pools:
+                dout = FastMaxPool.backward(dout, caches[k])
+                k -= 1
+            dout = ReLU.backward(dout, caches[k])
+            k -= 1
+            if self.batchnorm:
+                dout, grads[f"gamma{k}"], grads[f"beta{k}"] = SpatialBatchNorm.backward(dout, caches[k])
+                k -= 1
+            dout, grads[f"W{i}"], grads[f"b{i}"] = FastConv.backward(dout, caches[k])
+            k -= 1
+        
+        for i in range(1, self.num_layers + 1):
+            grads[f"W{i}"] += 2 * self.params[f"W{i}"] * self.reg
         #############################################################
         #                       END OF YOUR CODE                    #
         #############################################################
