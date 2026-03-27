@@ -960,7 +960,11 @@ class SpatialBatchNorm(object):
         # ours is less than five lines.                                #
         ################################################################
         # Replace "pass" statement with your code
-        pass
+        N, C, H, W = x.shape
+        x_flat = x.permute(0, 2, 3, 1).reshape(-1, C)
+        out_flat, cache = BatchNorm.forward(x_flat, gamma, beta, bn_param)
+        out = out_flat.reshape(N, H, W, C).permute(0, 3, 1, 2) # type: ignore
+        cache = ()
         ################################################################
         #                       END OF YOUR CODE                       #
         ################################################################
