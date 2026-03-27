@@ -591,7 +591,21 @@ class DeepConvNet(object):
         # layers, to simplify your implementation.              #
         #########################################################
         # Replace "pass" statement with your code
-        pass
+        out = X
+        caches = []
+        for i in range(1, self.num_layers):
+            out, cache = FastConv.forward(out, self.params[f"W{i}"], self.params[f"b{i}"], conv_param=conv_param)
+            caches.append(cache)
+            if self.batchnorm:
+                out, cache = SpatialBatchNorm.forward(out, self.params[f"gamma{i}"], self.params[f"beta{i}"], self.bn_params[i - 1])
+                caches.append(cache)
+            out, cache = ReLU.forward(out)
+            caches.append(cache)
+            if i in self.max_pools:
+                out, cache = MaxPool.forward(out, pool_param=pool_param)
+                caches.append(cache)
+        scores, cache = Linear.forward(out, self.params[f'W{self.num_layers}'], self.params[f'b{self.num_layers}'])
+        caches.append(cache)
         #####################################################
         #                 END OF YOUR CODE                  #
         #####################################################
@@ -612,7 +626,11 @@ class DeepConvNet(object):
         # does not include a factor of 0.5                                #
         ###################################################################
         # Replace "pass" statement with your code
-        pass
+        loss, ds = softmax_loss(scores, y)
+        for i in range(1, self.num_layers + 1):
+            loss += self.reg * torch.sum(self.params[f"W{i}"] ** 2)
+
+        dout, dW, db = Linear
         #############################################################
         #                       END OF YOUR CODE                    #
         #############################################################
