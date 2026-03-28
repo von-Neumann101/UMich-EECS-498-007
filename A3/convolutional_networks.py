@@ -937,7 +937,18 @@ class BatchNorm(object):
         # single 80-character line.                                       #
         ###################################################################
         # Replace "pass" statement with your code
-        pass
+        N, D = dout.shape
+
+        dbeta = torch.sum(dout, dim=0)
+        dgamma = torch.sum(dout * cache[0], dim=0)
+
+        dxhat = dout * cache[1]
+        dx = (1.0 / N) * cache[3] * (
+            N * dxhat
+            - torch.sum(dxhat, dim=0)
+            - cache[0] * torch.sum(dxhat * cache[0], dim=0)
+        )
+
         #################################################################
         #                        END OF YOUR CODE                       #
         #################################################################
