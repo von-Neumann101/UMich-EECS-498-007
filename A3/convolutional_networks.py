@@ -824,7 +824,15 @@ class BatchNorm(object):
             # (https://arxiv.org/abs/1502.03167) might prove to be helpful.  #
             ##################################################################
             # Replace "pass" statement with your code
-            pass
+            sample_mean = torch.mean(x, dim=0)
+            sample_var = torch.var(x, dim=0,unbiased=False)
+            stdr = torch.rsqrt(sample_var + eps)
+            x_hat = (x - sample_mean) * stdr
+            out = gamma * x_hat + beta
+            running_mean = momentum * running_mean + (1 - momentum) * sample_mean
+            running_var = momentum * running_var + (1 - momentum) * sample_var
+
+            cache = (x_hat, gamma, x - sample_mean, stdr, sample_var, eps)
             ################################################################
             #                           END OF YOUR CODE                   #
             ################################################################
@@ -837,7 +845,10 @@ class BatchNorm(object):
             # in the out variable.                                         #
             ################################################################
             # Replace "pass" statement with your code
-            pass
+            inv_std = torch.rsqrt(running_var + eps)
+            x_hat = (x - running_mean) * inv_std
+            out = gamma * x_hat + beta
+            cache = None
             ################################################################
             #                      END OF YOUR CODE                        #
             ################################################################
