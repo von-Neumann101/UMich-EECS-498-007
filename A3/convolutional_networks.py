@@ -890,7 +890,21 @@ class BatchNorm(object):
         # Don't forget to implement train and test mode separately.         #
         #####################################################################
         # Replace "pass" statement with your code
-        pass
+        if cache is None:
+            return None
+        
+        x_hat, gamma, xmu, inv_std, var, eps = cache
+        N, D = dout.shape
+
+        dbeta = dout.sum(dim=0)
+        dgamma = torch.sum(dout * x_hat, dim=0)
+
+        dxhat = dout * gamma
+        dvar = torch.sum(dxhat * xmu * (-0.5) * (var + eps) ** (-1.5), dim=0)
+        dmean = torch.sum(dxhat * (-inv_std), dim=0) + dvar * torch.sum(-2.0 * xmu, dim=0) / N
+
+        dx = dxhat * inv_std + dvar * 2.0 * xmu / N + dmean / N
+
         #################################################################
         #                      END OF YOUR CODE                         #
         #################################################################
