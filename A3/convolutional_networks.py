@@ -999,7 +999,7 @@ class SpatialBatchNorm(object):
         N, C, H, W = x.shape
         x_flat = x.permute(0, 2, 3, 1).reshape(-1, C)
         out_flat, cache = BatchNorm.forward(x_flat, gamma, beta, bn_param)
-        out = out_flat.reshape(N, H, W, C).permute(0, 3, 1, 2) # type: ignore
+        out = out_flat.reshape(N, H, W, C).permute(0, 3, 1, 2)
         ################################################################
         #                       END OF YOUR CODE                       #
         ################################################################
