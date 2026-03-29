@@ -604,7 +604,6 @@ class DeepConvNet(object):
             if i - 1 in self.max_pools:
                 out, cache = FastMaxPool.forward(out, pool_param=pool_param)
                 caches.append(cache)
-        print(self.params[f'W{self.num_layers}'].shape)
 
         scores, cache = Linear.forward(out, self.params[f'W{self.num_layers}'], self.params[f'b{self.num_layers}'])
         caches.append(cache)
