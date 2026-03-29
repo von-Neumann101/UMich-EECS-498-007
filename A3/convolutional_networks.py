@@ -1030,7 +1030,10 @@ class SpatialBatchNorm(object):
         # ours is less than five lines.                                 #
         #################################################################
         # Replace "pass" statement with your code
-        pass
+        N, C, H, W = dout.shape
+        dout_flat = dout.permute(0, 2, 3, 1).reshape(-1, C)
+        dx_flat, dgamma, dbeta = BatchNorm.backward(dout_flat, cache)
+        dx = dx_flat.reshape(N, H, W, C).permute(0, 3, 1, 2)
         ##################################################################
         #                       END OF YOUR CODE                         #
         ##################################################################
