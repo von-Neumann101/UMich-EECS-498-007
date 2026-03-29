@@ -636,7 +636,7 @@ class DeepConvNet(object):
 
         k = len(caches) - 2
         for i in range(self.num_layers - 1, 0, -1):
-            if i in self.max_pools:
+            if i - 1 in self.max_pools:
                 dout = FastMaxPool.backward(dout, caches[k])
                 k -= 1
             dout = ReLU.backward(dout, caches[k])
