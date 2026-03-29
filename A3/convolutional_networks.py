@@ -642,7 +642,7 @@ class DeepConvNet(object):
             dout = ReLU.backward(dout, caches[k])
             k -= 1
             if self.batchnorm:
-                dout, grads[f"gamma{k}"], grads[f"beta{k}"] = SpatialBatchNorm.backward(dout, caches[k])
+                dout, grads[f"gamma{i}"], grads[f"beta{i}"] = SpatialBatchNorm.backward(dout, caches[k])
                 k -= 1
             dout, grads[f"W{i}"], grads[f"b{i}"] = FastConv.backward(dout, caches[k])
             k -= 1
