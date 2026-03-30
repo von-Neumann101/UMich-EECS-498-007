@@ -663,7 +663,8 @@ def find_overfit_parameters():
     # model achieves 100% training accuracy within 30 epochs. #
     ###########################################################
     # Replace "pass" statement with your code
-    pass
+    weight_scale = 9e-2
+    learning_rate = 2e-3
     ###########################################################
     #                       END OF YOUR CODE                  #
     ###########################################################
