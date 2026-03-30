@@ -697,9 +697,9 @@ def create_convolutional_solver_instance(data_dict, dtype, device):
         num_epochs=6,
         batch_size=128,
         update_rule=adam,
-        optim_config={"learning_rate": 2e-3},
-        lr_decay=0.95,
-        print_every=20,
+        optim_config={"learning_rate": 4e-3},
+        lr_decay=0.97,
+        print_every=40,
         device=device,
     )
     #########################################################
