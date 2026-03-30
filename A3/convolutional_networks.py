@@ -679,7 +679,29 @@ def create_convolutional_solver_instance(data_dict, dtype, device):
     # CIFAR-10 within 60 seconds.                           #
     #########################################################
     # Replace "pass" statement with your code
-    pass
+    input_dim = data_dict["X_train"].shape[1:]
+    model = DeepConvNet(
+        input_dims=input_dim,
+        num_filters=[32, 64, 128],
+        max_pools=[1, 2],
+        batchnorm=True,
+        weight_scale="kaiming",
+        reg=1e-3,
+        dtype=dtype,
+        device=device,
+    )
+
+    solver = Solver(
+        model,
+        data_dict,
+        num_epochs=6,
+        batch_size=128,
+        update_rule=adam,
+        optim_config={"learning_rate": 2e-3},
+        lr_decay=0.95,
+        print_every=20,
+        device=device,
+    )
     #########################################################
     #                  END OF YOUR CODE                     #
     #########################################################
