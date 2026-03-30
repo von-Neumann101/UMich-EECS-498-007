@@ -720,7 +720,7 @@ def kaiming_initializer(Din, Dout, K=None, relu=True, device='cpu',
         # and device.                                                     #
         ###################################################################
         # Replace "pass" statement with your code
-        weight = torch.randn(Din, Dout, dtype=dtype, device=device) * torch.sqrt(gain / Din)
+        weight = torch.randn(Din, Dout, dtype=dtype, device=device) * torch.sqrt(torch.tensor(gain, dtype=dtype, device=device) / Din)
         ###################################################################
         #                            END OF YOUR CODE                     #
         ###################################################################
