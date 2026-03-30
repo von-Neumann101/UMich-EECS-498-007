@@ -686,7 +686,7 @@ def create_convolutional_solver_instance(data_dict, dtype, device):
         max_pools=[1, 2],
         batchnorm=True,
         weight_scale="kaiming",
-        reg=1e-3,
+        reg=2e-3,
         dtype=dtype,
         device=device,
     )
