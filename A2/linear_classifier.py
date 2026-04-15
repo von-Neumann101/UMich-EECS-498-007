@@ -527,7 +527,7 @@ def softmax_loss_naive(
         loss += -torch.log(p[y[i]])
         for j in range(num_classes):
             if j == y[i]:
-                dW[:, j] -= (1 - p[j]) * X[i]
+                dW[:, j] -= (1 - p[y[i]]) * X[i]
             else:
                 dW[:, j] += p[j] * X[i]
     
