@@ -566,11 +566,12 @@ def softmax_loss_vectorized(
     #############################################################################
     # Replace "pass" statement with your code
     num_train = X.shape[0]
-    scores = torch.mm(X, W)
-    scores -= scores.max(dim=1, keepdim=True).values
-    exp_scores = torch.exp(scores)
-    p2 = exp_scores / torch.sum(exp_scores, dim=1, keepdim=True)
-    p1 = p2[torch.arange(num_train), y]
+    scores = torch.mm(X, W) # N x C：S[i, j]为样本i分类为j的分数
+    scores -= scores.max(dim=1, keepdim=True).values # 数值稳定
+    exp_scores = torch.exp(scores) # 计算分数exp
+    # 我们对同样本每个类求和，所以要固定样本，对类(dim=1)求和
+    p2 = exp_scores / torch.sum(exp_scores, dim=1, keepdim=True) # 概率
+    p1 = p2[torch.arange(num_train), y] # 取应分类为正确的置信度
     loss += -torch.sum(torch.log(p1)) / num_train
     loss += reg * torch.sum(W ** 2)
 
