@@ -239,12 +239,7 @@ def svm_loss_vectorized(
     #############################################################################
     #                             END OF YOUR CODE                              #
     #############################################################################
-    Margins[Margins > 0] = 1
-    mask = Margins.to(X.dtype)
-    mask[torch.arange(X.shape[0]), y] = -mask.sum(dim=1)
-    dW = torch.mm(X.T, mask)
-    dW /= X.shape[0]
-    dW += 2 * reg * W
+    
     #############################################################################
     # TODO:                                                                     #
     # Implement a vectorized version of the gradient for the structured SVM     #
