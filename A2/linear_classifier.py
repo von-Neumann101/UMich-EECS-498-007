@@ -251,7 +251,14 @@ def svm_loss_vectorized(
     # loss.                                                                     #
     #############################################################################
     # Replace "pass" statement with your code
-    
+    # 这里和Margin已经无关，这是为了计算dW准备，注意，我们这里也恰好用到上面正确标签置零
+    Margins[Margins > 0] = 1
+    mask = Margins.to(X.dtype)
+    # 求和中我们要减去正确样本i - 1次——因为s_{y_i}可以直接提出来
+    mask[torch.arange(X.shape[0]), y] = -mask.sum(dim=1)
+    dW = torch.mm(X.T, mask) # 注意矩阵乘法
+    dW /= X.shape[0]
+    dW += 2 * reg * W
     #############################################################################
     #                             END OF YOUR CODE                              #
     #############################################################################
