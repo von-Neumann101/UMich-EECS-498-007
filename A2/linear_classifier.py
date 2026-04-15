@@ -575,7 +575,7 @@ def softmax_loss_vectorized(
     loss += -torch.sum(torch.log(p1)) / num_train
     loss += reg * torch.sum(W ** 2)
 
-    p2[torch.arange(num_train), y] -= 1
+    p2[torch.arange(num_train), y] -= 1 # 每个正确样本都要乘以1-p
 
     dW = X.t().mm(p2)
     dW /= num_train
