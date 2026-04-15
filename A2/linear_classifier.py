@@ -519,13 +519,13 @@ def softmax_loss_naive(
     num_classes = W.shape[1]
     for i in range(num_train):
         scores = W.t().mv(X[i])
-        scores -= torch.max(scores)
-
-        exp_scores = torch.exp(scores)
-        p = exp_scores / torch.sum(exp_scores)
-
-        loss += -torch.log(p[y[i]])
-        for j in range(num_classes):
+        scores -= torch.max(scores) # 数值稳定操作
+        exp_scores = torch.exp(scores) # 对所有的Score取exp
+        p = exp_scores / torch.sum(exp_scores) # 计算指数概率
+        loss += -torch.log(p[y[i]]) # loss=-log(p)
+        for j in range(num_classes): # 梯度
+            # p = Softmax(wx)
+            # L = -log(p)
             if j == y[i]:
                 dW[:, j] -= (1 - p[y[i]]) * X[i]
             else:
