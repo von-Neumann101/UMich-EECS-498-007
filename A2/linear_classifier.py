@@ -157,7 +157,7 @@ def svm_loss_naive(
         correct_class_score = scores[y[i]]
         for j in range(num_classes):
             if j == y[i]:
-                continue
+                continue # loss不计算正确标签的margin
             margin = scores[j] - correct_class_score + 1  # note delta = 1
             if margin > 0:
                 loss += margin
