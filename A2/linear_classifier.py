@@ -230,11 +230,12 @@ def svm_loss_vectorized(
     # result in loss.                                                           #
     #############################################################################
     # Replace "pass" statement with your code
-    S = torch.mm(X, W) # N x C
-    corS = S[torch.arange(N), y]
-    Margins = S - corS.view(N, 1) + 1
-    Margins[Margins < 0] = 0
-    Margins[torch.arange(N), y] = 0
+    S = torch.mm(X, W) # N x C：S[i, j]为样本i分类为j的置信度
+    corS = S[torch.arange(N), y] # 取每一个样本的正确分类
+    # S就是s_j，这里使用了广播，我们对每个样本减去其正确评分的置信度并+1
+    Margins = S - corS.view(N, 1) + 1 #
+    Margins[Margins < 0] = 0 # 使用ReLU(max)
+    Margins[torch.arange(N), y] = 0 # 求和条件为j!=y_i，损失里不应该计算正确得分
     loss = torch.sum(Margins) / N + reg * torch.sum(W ** 2)
     #############################################################################
     #                             END OF YOUR CODE                              #
