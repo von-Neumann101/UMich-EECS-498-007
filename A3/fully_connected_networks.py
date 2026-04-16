@@ -75,10 +75,11 @@ class Linear(object):
         x         +  y 
               b
         """
-        y = x.reshape(x.shape[0], -1)
+        x_f = x.reshape(x.shape[0], -1)
         # 有的时候不要太在意具体细节，形状对了就没错
+        # 之前说的没错，只需要知道谁乘谁即可，顺序通过形状判断（也许
         db = torch.sum(dout, dim=0).reshape(b.shape[0])
-        dw = torch.mm(y.T, dout)
+        dw = torch.mm(x_f.T, dout)
         dx = torch.mm(dout, w.T).reshape(x.shape)
         ##################################################
         #                END OF YOUR CODE                #
@@ -110,7 +111,7 @@ class ReLU(object):
         ###################################################
         #                 END OF YOUR CODE                #
         ###################################################
-        cache = x
+        cache = x # 这里是用于保存计算图（反向传播的时候用到）
         return out, cache
 
     @staticmethod
@@ -273,13 +274,14 @@ class TwoLayerNet(object):
         # Replace "pass" statement with your code
         W1, b1 = self.params['W1'], self.params['b1']
         W2, b2 = self.params['W2'], self.params['b2']
+
         h1, cache1 = Linear_ReLU.forward(X, W1, b1)
         scores, cache2 = Linear.forward(h1, W2, b2)
         ##############################################################
         #                     END OF YOUR CODE                       #
         ##############################################################
 
-        # If y is None then we are in test mode so just return scores
+        # If y is None then we are in test mode so just return scores（说白了就是预测时）
         if y is None:
             return scores
 
