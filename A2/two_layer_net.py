@@ -233,7 +233,7 @@ def nn_forward_backward(
     ###########################################################################
     # Replace "pass" statement with your code
     probs[torch.arange(N), y] -= 1
-    ds = probs / N
+    ds = probs / N # batch
     dW2 = h1.T @ ds + 2 * reg * W2
     db2 = ds.sum(dim=0)
     dh1 = ds @ W2.T
