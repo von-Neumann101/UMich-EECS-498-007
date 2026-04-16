@@ -200,7 +200,17 @@ def generate_fpn_anchors(
             # locations to get top-left and bottom-right co-ordinates.
             ##################################################################
             # Replace "pass" statement with your code
-            pass
+            anchor_scale = stride_scale * level_stride
+            area = anchor_scale ** 2
+            w = math.sqrt(area * aspect_ratio)
+            h = math.sqrt(area / aspect_ratio)
+
+            center_x, center_y = locations[:, 0], locations[:, 1]
+            x1, x2 = center_x - 0.5 * w, center_x + 0.5 * w
+            y1, y2 = center_y - 0.5 * h, center_y + 0.5 * h
+
+            boxes = torch.stack(([x1, y1, x2, y2]), dim=1)
+            anchor_boxes.append(boxes)
             ##################################################################
             #                           END OF YOUR CODE                     #
             ##################################################################
