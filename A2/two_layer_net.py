@@ -147,8 +147,8 @@ def nn_forward_pass(params: Dict[str, torch.Tensor], X: torch.Tensor):
     # shape (N, C).                                                            #
     ############################################################################
     # Replace "pass" statement with your code
-    hidden = (torch.mm(X, W1) + b1)
-    hidden[hidden < 0] = 0
+    hidden = torch.mm(X, W1) + b1 # 隐藏状态/激活值
+    hidden[hidden < 0] = 0 # ReLU
     scores = torch.mm(hidden, W2) + b2
     ###########################################################################
     #                             END OF YOUR CODE                            #
