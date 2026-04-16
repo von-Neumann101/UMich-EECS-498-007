@@ -127,8 +127,8 @@ class DetectorBackboneWithFPN(nn.Module):
         c5_lateral = self.fpn_params["lateral_c5"](c5)
 
         p5 = c5_lateral
-        p4 = c4_lateral + F.interpolate(p5, size=(c4_lateral.shape[2], c4_lateral.shape[4]))
-        p3 = c3_lateral + F.interpolate(p4, size=(c3_lateral.shape[2], c3_lateral.shape[4]))
+        p4 = c4_lateral + F.interpolate(p5, size=(c4_lateral.shape[2], c4_lateral.shape[3]))
+        p3 = c3_lateral + F.interpolate(p4, size=(c3_lateral.shape[2], c3_lateral.shape[3]))
 
         fpn_feats["p3"] = p3
         fpn_feats["p4"] = p4
