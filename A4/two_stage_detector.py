@@ -244,7 +244,24 @@ def iou(boxes1: torch.Tensor, boxes2: torch.Tensor) -> torch.Tensor:
     # TODO: Implement the IoU function here.                                 #
     ##########################################################################
     # Replace "pass" statement with your code
-    pass
+    x1_1, y1_1, x2_1, y2_1 = boxes1[:, 0], boxes1[:, 1], boxes1[:, 2], boxes1[:, 3]
+    x1_2, y1_2, x2_2, y2_2 = boxes2[:, 0], boxes2[:, 1], boxes2[:, 2], boxes2[:, 3]
+
+    inter_x1 = torch.maximum(x1_1[:, None], x1_2[None, :])
+    inter_y1 = torch.maximum(y1_1[:, None], y1_2[None, :])
+    inter_x2 = torch.minimum(x2_1[:, None], x2_2[None, :])
+    inter_y2 = torch.minimum(y2_1[:, None], y2_2[None, :])
+
+    inter_w = (inter_x2 - inter_x1).clamp(min=0)
+    inter_h = (inter_y2 - inter_y1).clamp(min=0)
+
+    inter_area = inter_h * inter_w
+
+    area1 = (x2_1 - x1_1) * (y2_1 - y1_1)
+    area2 = (x2_2 - x1_2) * (y2_2 - y1_2)
+    uni = area1[:, None] + area2[None, :] - inter_area
+    
+    iou = inter_area / uni
     ##########################################################################
     #                             END OF YOUR CODE                           #
     ##########################################################################
