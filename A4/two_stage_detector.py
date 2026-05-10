@@ -346,9 +346,30 @@ def rcnn_get_deltas_from_anchors(
     # TODO: Implement the logic to get deltas.                               #
     # Remember to set the deltas of "background/neutral" GT boxes to -1e8    #
     ##########################################################################
-    deltas = None
-    # Replace "pass" statement with your code
-    pass
+    deltas = torch.full_like(anchors, 1e-8)
+
+    fg_mask = gt_boxes[:, 0] >= 0;
+
+    if fg_mask.sum() == 0:
+        return deltas
+
+    anchors_fg = anchors[fg_mask]
+    gt_boxes_fg = gt_boxes[fg_mask]
+
+    xa = (anchors_fg[:, 0] + anchors_fg[:, 2]) / 2
+    ya = (anchors_fg[:, 1] + anchors_fg[:, 3]) / 2
+    wa = anchors_fg[:, 2] - anchors_fg[:, 0]
+    ha = anchors_fg[:, 3] - anchors_fg[:, 1]
+
+    xg = (gt_boxes_fg[:, 0] + gt_boxes[:, 2]) / 2
+    yg = (gt_boxes_fg[:, 1] + gt_boxes[:, 3]) / 2
+    wg = gt_boxes_fg[:, 2] - gt_boxes_fg[:, 0]
+    hg = gt_boxes_fg[:, 3] - gt_boxes_fg[:, 1]
+
+    deltas[fg_mask, 0] = (xg - xa) / wa
+    deltas[fg_mask, 1] = (yg - ya) / ha
+    deltas[fg_mask, 3] = torch.log(wg / wa)
+    deltas[fg_mask, 4] = torch.log(hg / ha)
     ##########################################################################
     #                             END OF YOUR CODE                           #
     ##########################################################################
