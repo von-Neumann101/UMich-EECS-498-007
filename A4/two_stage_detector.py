@@ -361,8 +361,8 @@ def rcnn_get_deltas_from_anchors(
     wa = anchors_fg[:, 2] - anchors_fg[:, 0]
     ha = anchors_fg[:, 3] - anchors_fg[:, 1]
 
-    xg = (gt_boxes_fg[:, 0] + gt_boxes[:, 2]) / 2
-    yg = (gt_boxes_fg[:, 1] + gt_boxes[:, 3]) / 2
+    xg = (gt_boxes_fg[:, 0] + gt_boxes_fg[:, 2]) / 2
+    yg = (gt_boxes_fg[:, 1] + gt_boxes_fg[:, 3]) / 2
     wg = gt_boxes_fg[:, 2] - gt_boxes_fg[:, 0]
     hg = gt_boxes_fg[:, 3] - gt_boxes_fg[:, 1]
 
