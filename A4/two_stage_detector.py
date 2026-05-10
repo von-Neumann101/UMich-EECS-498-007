@@ -402,9 +402,22 @@ def rcnn_apply_deltas_to_anchors(
     ##########################################################################
     # TODO: Implement the transformation logic to get output boxes.          #
     ##########################################################################
-    output_boxes = None
-    # Replace "pass" statement with your code
-    pass
+    output_boxes = torch.full_like(anchors, 0)
+
+    xa = (anchors[:, 0] + anchors[:, 2]) / 2
+    ya = (anchors[:, 1] + anchors[:, 3]) / 2
+    wa = anchors[:, 2] - anchors[:, 0]
+    ha = anchors[:, 3] - anchors[:, 1]
+
+    x = xa + wa * deltas[:, 0]
+    y = ya + ha * deltas[:, 1]
+    w = wa * torch.exp(deltas[:, 2])
+    h = ha * torch.exp(deltas[:, 3])
+
+    output_boxes[:, 0] = x - 0.5 * w
+    output_boxes[:, 1] = y - 0.5 * h
+    output_boxes[:, 2] = x + 0.5 * w
+    output_boxes[:, 3] = y + 0.5 * h
     ##########################################################################
     #                             END OF YOUR CODE                           #
     ##########################################################################
