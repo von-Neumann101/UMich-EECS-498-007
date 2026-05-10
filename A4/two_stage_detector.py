@@ -368,8 +368,8 @@ def rcnn_get_deltas_from_anchors(
 
     deltas[fg_mask, 0] = (xg - xa) / wa
     deltas[fg_mask, 1] = (yg - ya) / ha
-    deltas[fg_mask, 3] = torch.log(wg / wa)
-    deltas[fg_mask, 4] = torch.log(hg / ha)
+    deltas[fg_mask, 2] = torch.log(wg / wa)
+    deltas[fg_mask, 3] = torch.log(hg / ha)
     ##########################################################################
     #                             END OF YOUR CODE                           #
     ##########################################################################
